@@ -2,6 +2,14 @@ import ctypes
 import comtypes
 from ctypes import wintypes
 
+"""
+Proudly copypasted from 
+https://stackoverflow.com/questions/32149809/read-and-or-change-windows-8-master-volume-in-python
+
+Don't give a shit what happens here, but it works
+"""
+
+
 MMDeviceApiLib = comtypes.GUID(
     '{2FDAAFA3-7523-4F66-9957-9D5E7FE698F6}')
 IID_IMMDevice = comtypes.GUID(
