@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 pymata4 = "*"
 pycaw = "*"
+install = "*"
+wolframalpha = "*"
+sympy = "*"
 
 [dev-packages]
 
