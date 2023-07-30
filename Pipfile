@@ -9,6 +9,7 @@ pycaw = "*"
 install = "*"
 wolframalpha = "*"
 sympy = "*"
+auto-py-to-exe = "*"
 
 [dev-packages]
 
