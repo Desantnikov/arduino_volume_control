@@ -1,3 +1,5 @@
+import time
+
 import serial
 
 from v1.utils import normalize_distance
@@ -25,7 +27,7 @@ def start_event_loop():
 
 
 if __name__ == "__main__":
-    serial_port_name = ""  # input(f"Enter serial port to use. Use default ({DEFAULT_SERIAL_PORT_NAME}) if blank:\r\n")
+    serial_port_name = input(f"Enter serial port to use. Use default ({DEFAULT_SERIAL_PORT_NAME}) if blank:\r\n")
     serial_port_name = serial_port_name or DEFAULT_SERIAL_PORT_NAME
 
     device = serial.Serial(serial_port_name)
