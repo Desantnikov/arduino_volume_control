@@ -1,6 +1,40 @@
-Touchless PC volume controller arduino project.
+<h1>Touchless PC volume controller arduino project.</h1>
+<h2>
+No need to touch stuff anymore. Adjust volume just by swinging your hand. 
+</h2>
 
-<h1>V1</h1> 
+Basically you just place your hand inside this box and swing it up and down. And volume 
+is changes according to your hand's Y position.  
+
+<pre>
+_____-
+|
+|
+|
+|
+|
+|
+|
+|
+—   --
+| ^  |
+| 1* |
+——----
+</pre>
+
+`1*` - distance sensor with measurement direction marked by ^ 
+
+Main idea is to place a distance sensor inside the box. Distance sensor should 
+be fixed on the bottom of the box. Distance measurements should be directed from box bottom to box top. 
+Measurements happen several times per second. 
+If currently measured distance equals to overall box height - it means that there
+are no obstacles between the bottom and the top. But if measured distance is less than overall box 
+height - it means that something is present in the box. And using measured distance we know it's
+exact position on the Y coord. Then measurements values are sent to PC to adjust volume accordingly  
+
+
+
+<h1>Version 1</h1> 
 <h2>
 Uses firmata protocol to fully control arduino from PC. 
 No arduino code, all measurement values go directly to python script 
@@ -19,7 +53,7 @@ Components used:
 <hr>
 
 
-<h1>V2</h1>
+<h1>Version 2</h1>
 <h2>
 Uses better distance sensor and bluetooth module to send measurement results.
 </h2>
