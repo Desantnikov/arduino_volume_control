@@ -3,6 +3,8 @@ import serial
 from v2.constants import DEFAULT_SERIAL_PORT_NAME
 from v2.device_responses_handler import DeviceResponsesHandler
 
+device_response_handler = DeviceResponsesHandler()
+
 
 def start_event_loop():
     while True:
@@ -10,9 +12,12 @@ def start_event_loop():
         # print(f'Decoded device response: {device_response}')
 
         # get handler function corresponding to the data
-        handler_function = DeviceResponsesHandler.get_handler_function(device_response)
-        handler_function(device_response)
+        handler_function = device_response_handler.get_handler_function(device_response)
 
+        try:
+            handler_function(device_response)
+        except:
+            print('Handler function error')
 
 if __name__ == "__main__":
     serial_port_name = input(f"Enter serial port to use. Use default ({DEFAULT_SERIAL_PORT_NAME}) if blank:\r\n")

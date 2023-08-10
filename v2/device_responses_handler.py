@@ -1,24 +1,31 @@
+import time
+
 from shared.volume_controller import VolumeController
+from shared.keyboard_controller import SendInput, Keyboard, VK_MEDIA_PLAY_PAUSE
 from v1.utils import normalize_distance
 from v2.constants import MIN_DISTANCE_MM, MAX_DISTANCE_MM
 
 
 class DeviceResponsesHandler:
-    @classmethod
-    def get_handler_function(cls, device_response: str):
+    def __init__(self):
+        self.previous_vibro_timestamp = 0
+
+    def get_handler_function(self, device_response: str):
         first_word_to_handler_function = {
-            "distance": cls.handle_distance,
-            "vibro": cls.handle_vibro,
-            "invalid": cls.handle_invalid
+            "distance": self.handle_distance,
+            "vibro": self.handle_vibro,
+            "invalid": self.handle_invalid
         }
 
-        # take first word to understand which data is sent in this line
-        first_word = device_response.split()[0].strip(':').lower()
+        try:
+            # take first word to understand which data is sent in this line
+            first_word = device_response.split()[0].strip(':').lower()
+        except:
+            return first_word_to_handler_function["invalid"]
 
         return first_word_to_handler_function.get(first_word) or first_word_to_handler_function["invalid"]
 
-    @staticmethod
-    def handle_distance(device_response: str):
+    def handle_distance(self, device_response: str):
         current_distance_mm = int(device_response.split()[-1])  # extract distance value
 
         # convert absolute distance value to float in [0:1] range, which is required by the volume controller class
@@ -31,11 +38,22 @@ class DeviceResponsesHandler:
 
         VolumeController().set_system_volume(new_volume_level)
 
-    @staticmethod
-    def handle_vibro(device_response: str):
-        is_vibro_happened = bool(device_response.split()[-1])  # extract distance value
+    def handle_vibro(self, device_response: str):
+        # is_vibro_happened = bool(device_response.split()[-1])  # extract distance value
 
-        print(f'\r\n\r\nVIBRO HAPPENED\r\n\r\n')
+        time_between_vibros = time.time() - self.previous_vibro_timestamp
+
+        print(f'Time between: {time_between_vibros}')
+
+        if 1.5 > time_between_vibros > 0.05:  # TODO: move to constants
+            print(f'VIBRO HAPPENED;\r\nTime between: {time_between_vibros}')
+            # print('\r\n\r\nTRIGGER\r\n')
+            SendInput(Keyboard(VK_MEDIA_PLAY_PAUSE))
+
+            print(f'SENT A PLAY/PAUSE')
+
+        self.previous_vibro_timestamp = time.time()
+
 
     @staticmethod
     def handle_invalid(device_response: str):
