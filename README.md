@@ -66,8 +66,22 @@ switched to the AT mode. To check if it's switched - open serial terminal and ty
 both CR and LF endlines. Official doc says that default connection password is "000000". In my case it was "1234".
 All baudrates should be 9600, but in case of any issues you might try 38400.
 
+SW_520D tilt-switch sensor is used to track when user hit the controller. And if hit two 
+times - plays/pauses what is currently playing
+
 
 Components used:
 - Arduino nano
 - US-100 ultrasonic distance sensor
 - ZS-040 bluetooth module
+- SW_520D tilt-switch sensor
+- 9v battery (+ connected to VIN instead of 5v)
+
+
+
+
+
+<h1>Making and *.exe file</h1>
+* make sure you have installed microsoft visual c++ 2015
+* make sure you have installed gevent package
+* execute `auto-py-to-exe`

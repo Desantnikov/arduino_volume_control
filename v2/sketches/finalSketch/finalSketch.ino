@@ -8,6 +8,9 @@ const int US100_RX = 3;
 const int ZS040_TX = 9;
 const int ZS040_RX = 8;
 
+//  SW-520D-Tilt-Switch-Sensor
+const int SW_520D = 5;
+
 SoftwareSerial detectorUS100(US100_RX, US100_TX);
 SoftwareSerial bluetoothZS040(ZS040_RX, ZS040_TX);
 
@@ -16,13 +19,14 @@ unsigned int distanceRawSecondByte = 0;
 
 unsigned int distanceMillimeters = 0;
 
-String distanceString;
+String distanceString, tiltOrVibrationString;
 
 
 void setup() {
   Serial.begin(9600);
-  bluetoothZS040.begin(9600);
-  detectorUS100.begin(9600);
+  bluetoothZS040.begin(9600);  // BT module
+  detectorUS100.begin(9600);  // distance
+  pinMode(SW_520D, INPUT);  // vibration-and-tilt
 }
  
 void loop() {
@@ -48,7 +52,24 @@ void loop() {
         bluetoothZS040.write(distanceString[i]);
       }
     }
+  }
 
+  int sensorValue = digitalRead(SW_520D);
+
+  if(sensorValue==HIGH){ 
+    Serial.println("Vibro: false");
+
+    tiltOrVibrationString = "Vibro: false\r\n";
+  }
+  else
+  {
+    Serial.println("Vibro: true");
+
+    tiltOrVibrationString = "Vibro: true\r\n";
+    for (int i = 0; i < tiltOrVibrationString.length(); i++)
+    {
+      bluetoothZS040.write(tiltOrVibrationString[i]);
+    }
   }
 
 }

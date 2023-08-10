@@ -140,6 +140,7 @@ class VolumeController(comtypes.IUnknown):
         return ctypes.cast(interface, ctypes.POINTER(cls))
 
     def set_system_volume(self, volume):
+        print(f'Set system volume: {volume}\r\n')
         comtypes.CoInitialize()
         ev = self.get_default()
         ev.SetMasterVolumeLevelScalar(volume)
