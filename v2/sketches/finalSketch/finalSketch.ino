@@ -27,43 +27,49 @@ void sendStringBluetooth(String stringToSend) {
   for (int i = 0; i < stringToSend.length(); i++) {
     bluetoothZS040.write(stringToSend[i]);
   }
-  delay(30);
+  // delay(30);
 }
 
-unsigned long previousMillis = 0;  
-const long interruptionInterval = 25; 
+unsigned long previousMicros = 0;  
+ // lowering will lead to redudant sensor activity when pressing for some time instead of just two quick clicks
+const long interruptionInterval = 175000; 
 
 
 void vibro_handler() {
-  Serial.write("VIBRO HANDLED\r\n\r\n");
+  detachInterrupt(digitalPinToInterrupt(SW_18010P));
+  // vibroSensorValue = digitalRead(SW_18010P);
+  Serial.println("VIBRO HANDLED: " + String(vibroSensorValue));
+
   // this function is called > 20 times after one hit near the vibration sensor, so 
   // since I don't need 20 events per one hit - I pay attention only to one vibration
   // event in 0.1 second
-  unsigned long currentMillis = millis();
+  unsigned long currentMicros = micros();  // google says micros should be used inside interruptions instead of millis
 
-  if (currentMillis - previousMillis >= interruptionInterval) {
-    // save the last time you blinked the LED
-    previousMillis = currentMillis;
+  if ( currentMicros - previousMicros >= interruptionInterval) {
+    previousMicros = currentMicros;
     sendStringBluetooth("Vibro: true\r\n");
-  }
-  
+  } 
 }
 
 void setup() {
+  
   Serial.begin(9600);
   bluetoothZS040.begin(9600);  // BT module
   detectorUS100.begin(9600);  // distance
-  pinMode(SW_18010P, INPUT);  // vibration-and-tilt
-  attachInterrupt(digitalPinToInterrupt(SW_18010P), vibro_handler, RISING);  // handle vibration with interruptions
+  pinMode(SW_18010P, INPUT);  // vibration
+  // attachInterrupt(digitalPinToInterrupt(SW_18010P), vibro_handler, FALLING);  // handle vibration with interruptions
 }
 
 void loop()
 {
-  detectorUS100.flush(); 
-  delay(30);
+  // looks like a bad idea, but attaching and detaching this interrupt makes
+  // sensor accuracy to double tap almost perfect
+  attachInterrupt(digitalPinToInterrupt(SW_18010P), vibro_handler, RISING);  
 
+
+  detectorUS100.flush(); 
   detectorUS100.write(0x55);  // send command to measure distance
-  delay(50);  // setting below this value cause shit
+  delay(100);  // setting below this value cause shit
 
   if(detectorUS100.available() >= 2)
   {
@@ -82,7 +88,7 @@ void loop()
 
     if((distanceMillimeters > 1) && (distanceMillimeters < 500))  // limits should align with limits from constants.py
     {
-      // sendStringBluetooth("Distance: " + String(distanceMillimeters) + "\r\n");
+      sendStringBluetooth("Distance: " + String(distanceMillimeters) + "\r\n");
     }
   }
 }

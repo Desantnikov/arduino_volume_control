@@ -13,11 +13,8 @@ def start_event_loop():
 
         # get handler function corresponding to the data
         handler_function = device_response_handler.get_handler_function(device_response)
+        handler_function(device_response)
 
-        try:
-            handler_function(device_response)
-        except:
-            print('Handler function error')
 
 if __name__ == "__main__":
     serial_port_name = input(f"Enter serial port to use. Use default ({DEFAULT_SERIAL_PORT_NAME}) if blank:\r\n")
@@ -28,6 +25,8 @@ if __name__ == "__main__":
 
     try:
         start_event_loop()
+    except Exception as e:
+        print(f'\r\n\r\nUnexpected exception: {e}')
 
     finally:
         device.close()

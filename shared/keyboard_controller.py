@@ -5,6 +5,7 @@ Proudly copypasted from
 https://stackoverflow.com/questions/11906925/python-simulate-keydown
 
 Don't give a shit what happens here, but it works
+All these 450 lines were copypasted for just sending PAUSE/PLAY button on doubleclick
 """
 
 LONG = ctypes.c_long

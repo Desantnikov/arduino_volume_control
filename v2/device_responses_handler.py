@@ -3,12 +3,12 @@ import time
 from shared.volume_controller import VolumeController
 from shared.keyboard_controller import SendInput, Keyboard, VK_MEDIA_PLAY_PAUSE
 from v1.utils import normalize_distance
-from v2.constants import MIN_DISTANCE_MM, MAX_DISTANCE_MM
+from v2.constants import MIN_DISTANCE_MM, MAX_DISTANCE_MM, VIBRO_DOUBLECLICK_MAX_TIME
 
 
 class DeviceResponsesHandler:
     def __init__(self):
-        self.previous_vibro_timestamp = 0
+        self.last_vibro_timestamp = 0
 
     def get_handler_function(self, device_response: str):
         first_word_to_handler_function = {
@@ -39,21 +39,14 @@ class DeviceResponsesHandler:
         VolumeController().set_system_volume(new_volume_level)
 
     def handle_vibro(self, device_response: str):
-        # is_vibro_happened = bool(device_response.split()[-1])  # extract distance value
+        time_between_last_vibros = time.time() - self.last_vibro_timestamp
+        print(f'Time between: {time_between_last_vibros};')
 
-        time_between_vibros = time.time() - self.previous_vibro_timestamp
+        if time_between_last_vibros < VIBRO_DOUBLECLICK_MAX_TIME:
+            SendInput(Keyboard(VK_MEDIA_PLAY_PAUSE))  # play/pause active media (video, music, etc)
+            print(f'DOUBLECLICK: SENT A PLAY/PAUSE')
 
-        print(f'Time between: {time_between_vibros}')
-
-        if 1.5 > time_between_vibros > 0.05:  # TODO: move to constants
-            print(f'VIBRO HAPPENED;\r\nTime between: {time_between_vibros}')
-            # print('\r\n\r\nTRIGGER\r\n')
-            SendInput(Keyboard(VK_MEDIA_PLAY_PAUSE))
-
-            print(f'SENT A PLAY/PAUSE')
-
-        self.previous_vibro_timestamp = time.time()
-
+        self.last_vibro_timestamp = time.time()
 
     @staticmethod
     def handle_invalid(device_response: str):

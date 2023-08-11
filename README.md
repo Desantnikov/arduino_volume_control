@@ -5,6 +5,7 @@ No need to touch stuff anymore. Adjust volume just by swinging your hand.
 
 Basically you just place your hand inside this box and swing it up and down. And volume 
 is changes according to your hand's Y position.  
+Volume control and media play/pause will work only on windows 
 
 <pre>
 _____-
@@ -74,7 +75,7 @@ Components used:
 - Arduino nano
 - US-100 ultrasonic distance sensor
 - ZS-040 bluetooth module
-- SW18010P vibration sensor (initially took SW-520D but it I don't need a tilt sensor)
+- SW18010P vibration sensor (initially took SW-520D, but I don't need a tilt sensor)
 - 9v battery
 
 
