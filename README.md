@@ -74,8 +74,8 @@ Components used:
 - Arduino nano
 - US-100 ultrasonic distance sensor
 - ZS-040 bluetooth module
-- SW_520D tilt-switch sensor
-- 9v battery (+ connected to VIN instead of 5v)
+- SW18010P vibration sensor (initially took SW-520D but it I don't need a tilt sensor)
+- 9v battery
 
 
 
