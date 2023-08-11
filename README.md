@@ -70,6 +70,21 @@ All baudrates should be 9600, but in case of any issues you might try 38400.
 SW_520D tilt-switch sensor is used to track when user hit the controller. And if hit two 
 times - plays/pauses what is currently playing
 
+Lots of workarounds were used in python code and in arduino sketch. But these workarounds really improved 
+the measurement process and made controlling PC with this stuff more or less smooth.
+
+Python W/A's
+1. When processing data from distance sensor - ignore fluctuations of less than 5% of volume
+2. When registering doubleclick with vibration sensor 
+   3. ignore vibros if they happened right after previous vibro - 
+      usually that happens when sensor is not placed properly or instead of clicks user makes long pushes
+   4. ignore doubleclick if second vibro happened too late after first vibro  
+   5. ignore doubleclick if it happened too early after previous - same as 3th point
+
+Similiar workarounds were made on the Arduino side.
+Main question here is how this all will work when soldered. Maybe more workarounds will be needed. Or to rework 
+using vibro sensor to read pin in a main loop instead of using interruptions
+
 
 Components used:
 - Arduino nano
