@@ -2,6 +2,9 @@ import ctypes
 import comtypes
 from ctypes import wintypes
 
+
+from v2.constants import ROUND_VOLUME_VALUE_TO_N_DIGITS
+
 """
 Proudly copypasted from 
 https://stackoverflow.com/questions/32149809/read-and-or-change-windows-8-master-volume-in-python
@@ -133,15 +136,30 @@ class VolumeController(comtypes.IUnknown):
                            (['out', 'retval'], LPFLOAT, 'pfLevelMaxDB'),
                            (['out', 'retval'], LPFLOAT, 'pfVolumeIncrementDB')))
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.current_volume = 0
+
     @classmethod
     def get_default(cls):
         endpoint = IMMDeviceEnumerator.get_default(eRender, eMultimedia)
         interface = endpoint.Activate(cls._iid_, comtypes.CLSCTX_INPROC_SERVER)
         return ctypes.cast(interface, ctypes.POINTER(cls))
 
-    def set_system_volume(self, volume):
-        print(f'Set system volume: {volume}\r\n')
+    def set_system_volume(self, volume, round_volume=ROUND_VOLUME_VALUE_TO_N_DIGITS):
+        rounded_volume = round(volume, round_volume)
+
+        print(f'Rounded: {rounded_volume}; Current: {self.current_volume}')
+        if rounded_volume == self.current_volume:
+            print(f'Same volume: {rounded_volume}, ignore')
+            return
+
+        print(f'Set system volume rounded to 2: {rounded_volume}\r\n')
+        self.current_volume = rounded_volume
+
         comtypes.CoInitialize()
         ev = self.get_default()
-        ev.SetMasterVolumeLevelScalar(volume)
+        ev.SetMasterVolumeLevelScalar(rounded_volume)
         comtypes.CoUninitialize()
+
+
