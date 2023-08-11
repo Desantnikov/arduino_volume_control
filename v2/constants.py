@@ -12,3 +12,4 @@ VIBRO_DOUBLECLICK_MIN_TIME = 0.20  # two clicks on less than 0.2 seconds will be
 INTERVAL_BETWEEN_DOUBLECLICKS = 1.75  # ignore all (mainly fake) doubleclicks for 1.75 sec's after last doubleclick
 
 ROUND_VOLUME_VALUE_TO_N_DIGITS = 1
+IGNORABLE_VOLUME_DIFFERENCE = 0.05  # when current volume differs from new volume in less than 0.05 - ignore it

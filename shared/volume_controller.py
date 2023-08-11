@@ -3,7 +3,7 @@ import comtypes
 from ctypes import wintypes
 
 
-from v2.constants import ROUND_VOLUME_VALUE_TO_N_DIGITS
+from v2.constants import ROUND_VOLUME_VALUE_TO_N_DIGITS, IGNORABLE_VOLUME_DIFFERENCE
 
 """
 Proudly copypasted from 
@@ -146,15 +146,17 @@ class VolumeController(comtypes.IUnknown):
         interface = endpoint.Activate(cls._iid_, comtypes.CLSCTX_INPROC_SERVER)
         return ctypes.cast(interface, ctypes.POINTER(cls))
 
-    def set_system_volume(self, volume, round_volume=ROUND_VOLUME_VALUE_TO_N_DIGITS):
-        rounded_volume = round(volume, round_volume)
-
+    def set_system_volume(self, volume, round_volume_to_n_digits=ROUND_VOLUME_VALUE_TO_N_DIGITS):
+        rounded_volume: float = round(volume, round_volume_to_n_digits)
         print(f'Rounded: {rounded_volume}; Current: {self.current_volume}')
-        if rounded_volume == self.current_volume:
-            print(f'Same volume: {rounded_volume}, ignore')
+
+        # compensate sensor's inaccuracy and hand movement by ignoring a 5% change
+        volume_difference = self.current_volume - rounded_volume
+        if IGNORABLE_VOLUME_DIFFERENCE >= volume_difference >= -IGNORABLE_VOLUME_DIFFERENCE:
+            print(f'Volume difference: {volume_difference}; Less than {IGNORABLE_VOLUME_DIFFERENCE}: ignore')
             return
 
-        print(f'Set system volume rounded to 2: {rounded_volume}\r\n')
+        print(f'Set system volume rounded to {round_volume_to_n_digits} digits: {rounded_volume}\r\n')
         self.current_volume = rounded_volume
 
         comtypes.CoInitialize()
