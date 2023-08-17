@@ -69,6 +69,9 @@ All baudrates should be 9600, but in case of any issues you might try 38400.
 
 SW_520D tilt-switch sensor is used to track when user hit the controller. And if hit two 
 times - plays/pauses what is currently playing
+Curcuits schema can be found in /v2/circuits, `*.fxx` is a Fritzing applications format. Have much more 
+components (like US-100 or ZA-40) than tinkercad, circuitIO and other webapp shit.   
+![AdruinoVolumeController_bb.jpg](v2%2Fcircuits%2FAdruinoVolumeController_bb.jpg)
 
 Lots of workarounds were used in python code and in arduino sketch. But these workarounds really improved 
 the measurement process and made controlling PC with this stuff more or less smooth.
@@ -91,7 +94,7 @@ Components used:
 - US-100 ultrasonic distance sensor
 - ZS-040 bluetooth module
 - SW18010P vibration sensor (initially took SW-520D, but I don't need a tilt sensor)
-- 9v battery
+- 9v battery (to be replaced with 5v power supply, distance sensor goes crazy when 9v applied)
 
 
 
