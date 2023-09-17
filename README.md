@@ -74,7 +74,7 @@ SW_520D tilt-switch sensor is used to track when user hit the controller. And if
 times - plays/pauses what is currently playing
 Curcuits schema can be found in /v2/circuits, `*.fxx` is a Fritzing applications format. Have much more 
 components (like US-100 or ZA-40) than tinkercad, circuitIO and other webapp shit.   
-![AdruinoVolumeController_bb.jpg](v2%2Fcircuits%2FAdruinoVolumeController_bb.jpg)
+![v2/circuits/AdruinoVolumeController_bb.jpg](AdruinoVolumeController_bb.jpg)
 
 Lots of workarounds were used in python code and in arduino sketch. But these workarounds really improved 
 the measurement process and made controlling PC with this stuff more or less smooth.
@@ -101,6 +101,36 @@ Components used:
 
 
 
+<h1>Version 2.1</h1>
+<h3>
+I have burnt ST_18010P vibro sensor during soldering and don't want to wait for a new one, so 
+returning back to SW-520D vibration sensors.
+</h3>
+<p>
+While ST_18010P was able to return both digital and analogue values, SW-520D   
+</p>
+
+Here is basic SW-520D connection circuit.
+![img.png](img.png)
+
+Also analog reading when arduino is powered via USB from PC sucks. So currently 
+I'll use only digital pins and postpone analog reading. Anyway, when powered from PC, 
+it always returns either 800 or 0.  
+
+Empirically I found out that if several such sensors are connected in 
+parralel - they work like an OR clause.  You will have True (no vibration) when at
+least one sensor returns true. 
+When reading analog - you will have the biggest value from all sensors.
+(it returns 0 when sensor is upside-down and 1023 when it's 
+staying straight without movement).
+
+And using several sensors at once helps to filter fake-positive cases. For example
+when you make one tap - something about 15-20 events are triggered, and if you use 
+interruptions then you have to make workarounds. Or sometimes you just have 
+random fake-positive events.
+On the other side, adding just one more sensor fixed problem with 15 events for one 
+tap. And now double-tap could be caught almost perfectly and without any 
+filtering/thresholds and other stuff.
 
 
 <h1>Making and *.exe file</h1>

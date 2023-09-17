@@ -8,12 +8,11 @@ const int US100_RX = 3;
 const int ZS040_TX = 6;
 const int ZS040_RX = 5;
 
-//SW_18010P vibration Sensor
-const int SW_18010P_ANALOG = A7;
-const int SW_18010P_DIGITAL = 2;
+//SW_520D vibration Sensor
+//const int SW_520D_ANALOG_INPUT = A7;
+const int SW_520D_DIGITAL_INPUT = 2;
 
-int vibroSensorValue = 0, previousVibroSensorValue = 0, averageVibroValue = 0;
-int vibroSensorTriggered = 0;
+int vibroSensorValue = 0;
 
 SoftwareSerial detectorUS100(US100_RX, US100_TX);
 SoftwareSerial bluetoothZS040(ZS040_RX, ZS040_TX);
@@ -37,7 +36,7 @@ int getDistance() {  // to measure distance in UART mode it's needed to:
     detectorUS100.flush();  // clear buffer
     detectorUS100.write(0x55);  // send command to measure distance
 
-    delay(100);  // setting lower than 100 cause shitty measurements
+    delay(50);  // setting lower than 100 cause shitty measurements
 
     distanceRawFirstByte = detectorUS100.read();
     distanceRawSecondByte  = detectorUS100.read();
@@ -48,16 +47,16 @@ int getDistance() {  // to measure distance in UART mode it's needed to:
 }
 
 void processDistance(int distanceMillimeters, int previousDistanceMillimeters) {
-    Serial.print("Distance: ");
-    Serial.print(distanceMillimeters);
-    if ((distanceMillimeters - previousDistanceMillimeters) < 5)
+    // Serial.print("Distance: ");
+    // Serial.print(distanceMillimeters);
+    if (distanceMillimeters == previousDistanceMillimeters)
     {
-//
-      Serial.print("; Difference is less than 5 millimeters, ignore \r\n");
+// //
+      // Serial.print("; Difference is less than 5 millimeters, ignore \r\n");
       return;
     }
 
-    if((distanceMillimeters > 45) && (distanceMillimeters < 210))  // limits should align with limits from constants.py
+    if((distanceMillimeters > 45) && (distanceMillimeters < 350))  // limits should align with limits from constants.py
     {
       sendStringBluetooth("Distance: " + String(distanceMillimeters) + "\r\n");
     }
@@ -72,40 +71,28 @@ void setup() {
   detectorUS100.begin(9600);  // distance
   
   // pinMode(SW_18010P_ANALOG, INPUT);  // vibro
- pinMode(SW_18010P_DIGITAL, INPUT);  // vibro
+ pinMode(SW_520D_DIGITAL_INPUT, INPUT);  // vibro
 }
 
 void loop()
 {
-  previousVibroSensorValue = vibroSensorValue;
-  vibroSensorValue = analogRead(SW_18010P_ANALOG);
-  vibroSensorTriggered = digitalRead(SW_18010P_DIGITAL);
+
+  vibroSensorValue = digitalRead(SW_520D_DIGITAL_INPUT);
 // averageVibroSensorValue
 
-  // if (vibroSensorTriggered == LOW) {
+   if (vibroSensorValue == LOW) {
     // if (vibroSensorValue == 0) {
-      Serial.print("Vibro sensor triggered: ");
-      Serial.print(vibroSensorTriggered);
-      Serial.print("; Vibro value: ");
-      Serial.print(vibroSensorValue);
-      Serial.print("; Previous value: ");
-      Serial.print(previousVibroSensorValue);
-      Serial.print("; Average value: ");
-      // Serial.print(averageVibroSensorValue);
-
-      Serial.print("\r\n");
-
-      
-      // sendStringBluetooth("Vibro: " + String(vibroSensorValue) + "\r\n");
-    // }
-    delay(100);
+      Serial.println("Vibro sensor triggered");
+       sendStringBluetooth("Vibro: " + String(vibroSensorValue) + "\r\n");
+     }
+   delay(50);
   // }
   
   
-//  previousDistanceMillimeters = distanceMillimeters;
-//  distanceMillimeters = getDistance();
+ previousDistanceMillimeters = distanceMillimeters;
+ distanceMillimeters = getDistance();
 //
-//   processDistance(distanceMillimeters, previousDistanceMillimeters);
+  processDistance(distanceMillimeters, previousDistanceMillimeters);
 
 }
 
