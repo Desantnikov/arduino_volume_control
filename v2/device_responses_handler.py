@@ -44,6 +44,8 @@ class DeviceResponsesHandler:
         self.volume_controller.set_system_volume(new_volume_level)
 
     def handle_vibro(self, device_response: str):
+        print(f"Vibro device response: {device_response}")
+
         time_between_last_vibros = time.time() - self.last_vibro_timestamp
         print(f'Time between: {time_between_last_vibros};')
 

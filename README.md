@@ -66,6 +66,9 @@ Uses ZS-040 bluetooth module to send measurement results. Please note that befor
 switched to the AT mode. To check if it's switched - open serial terminal and type "AT". And don't forget to set 
 both CR and LF endlines. Official doc says that default connection password is "000000". In my case it was "1234".
 All baudrates should be 9600, but in case of any issues you might try 38400.
+Usually ZS-040 has a 'HC-06' bluetooth name.
+Your PC should be paired with it to use it as a regular serial device using 'Serial over Bluetooth'.  
+
 
 SW_520D tilt-switch sensor is used to track when user hit the controller. And if hit two 
 times - plays/pauses what is currently playing
